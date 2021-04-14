@@ -18,9 +18,10 @@ year = 2021
 league = 1
 sinceRound = 1 # game 1~6 -> round 1 ==> round = 1 + (game-1)/6 
 untilRound = 9
-untilRound *= 6
 
-for game in range(sinceRound,2):
+untilRound = 6 * untilRound + 1
+
+for game in range(sinceRound,untilRound):
     driver.find_element_by_xpath("//select[@name='meetYear']/option[@value={}]".format(year)).click()
     driver.find_element_by_xpath("//select[@name='meetSeq']/option[@value={}]".format(league)).click()
     driver.find_element_by_xpath("//select[@name='roundId']/option[@value={}]".format(1+(game-1)//6)).click()
@@ -29,7 +30,13 @@ for game in range(sinceRound,2):
     html = driver.page_source
     pattern = p.parse(html)
     
-    with open("foo.txt","w+", encoding="UTF-8") as f:
+    file_name = "2021_"
+    if game > 99:
+        file_name += "0"
+    if game > 9:
+        file_name += "0"
+    file_name += game
+    with open("output/{}.html".format(file_name),"w+", encoding="UTF-8") as f:
         for idx,item in enumerate(pattern,0):
             if(idx % 2):
                 print(idx)
